@@ -9,6 +9,7 @@ import { DbModule } from './db/db.module';
       envFilePath: '.env',
     }),
     DbModule,
+
   ],
   controllers: [],
   providers: [],
