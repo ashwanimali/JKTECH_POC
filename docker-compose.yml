@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  gateway:
+    container_name: gateway
+    build:
+      context: ./api_gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./api_gateway/.env
+    volumes:
+      - ./.data/uploads:/usr/src/app/uploads
+    depends_on:
+      - db
+      - redis
+      - ingestion
+
+  ingestion:
+    container_name: ingestion
+    build:
+      context: ./ingestion
+      dockerfile: Dockerfile
+    ports:
+      - "4002:4002"
+    env_file:
+      - ./ingestion/.env
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres
+    container_name: postgres
+    restart: always
+    env_file:
+      - ./api_gateway/.env
+    volumes:
+      - ./.data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    container_name: redis
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./.data/redis:/data
+
+volumes:
+  pgdata:
