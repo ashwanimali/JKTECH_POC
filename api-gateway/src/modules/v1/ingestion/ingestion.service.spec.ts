@@ -1,131 +1,101 @@
-import { createMock, DeepMocked } from "@golevelup/ts-jest";
-import { ClientProxy } from "@nestjs/microservices";
-import { Test, TestingModule } from "@nestjs/testing";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { ClsModule, ClsService } from "nestjs-cls";
-import { DocumentEntity } from "src/document/entities/document.entity";
-import { INGESTION_SERVICE } from "src/global/tokens/ingestion.token";
-import { UserEntity } from "src/user/entities/user.entity";
-import { Repository } from "typeorm";
-import { IngestionService } from "./ingestion.service";
-import { mockUserEntity } from "src/user/entities/__fixtures__/user-entity.fixture";
+import { Test, TestingModule } from '@nestjs/testing';
+import { IngestionService } from './ingestion.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from '../users/users.entity';
+import { Document } from '../documents/entities/document.entity';
+import { ClsService } from 'nestjs-cls';
+import { of } from 'rxjs';
+import { CreateIngestionDto } from './dto/create-ingestion.dto';
 
-// jest mock firstValueFrom function
-jest.mock("rxjs", () => ({
-  ...jest.requireActual("rxjs"),
-  firstValueFrom: jest.fn().mockImplementation((obs) => Promise.resolve(obs)),
-}));
-
-describe("IngestionService", () => {
+describe('IngestionService', () => {
   let service: IngestionService;
-  let ingestionClient: DeepMocked<ClientProxy>;
-  let userRepo: Repository<UserEntity>;
-  let documentRepo: Repository<DocumentEntity>;
-  let clsService: ClsService;
+
+  const mockUserRepo = {
+    findOneByOrFail: jest.fn(),
+  };
+
+  const mockDocumentRepo = {
+    findOneByOrFail: jest.fn(),
+  };
+
+  const mockClientProxy = {
+    send: jest.fn(),
+  };
+
+  const mockClsService = {
+    get: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ClsModule],
       providers: [
         IngestionService,
-        {
-          provide: getRepositoryToken(DocumentEntity),
-          useValue: createMock(),
-        },
-        {
-          provide: getRepositoryToken(UserEntity),
-          useValue: createMock(),
-        },
-        {
-          provide: INGESTION_SERVICE,
-          useValue: createMock<ClientProxy>(),
-        },
+        { provide: getRepositoryToken(User), useValue: mockUserRepo },
+        { provide: getRepositoryToken(Document), useValue: mockDocumentRepo },
+        { provide: 'INGESTION_SERVICE', useValue: mockClientProxy },
+        { provide: ClsService, useValue: mockClsService },
       ],
     }).compile();
 
-    clsService = module.get(ClsService);
-    ingestionClient = module.get(INGESTION_SERVICE);
-    userRepo = module.get(getRepositoryToken(UserEntity));
-    documentRepo = module.get(getRepositoryToken(DocumentEntity));
     service = module.get<IngestionService>(IngestionService);
   });
 
-  it("should be defined", () => {
-    expect(service).toBeDefined();
-  });
+  afterEach(() => jest.clearAllMocks());
 
-  it("should add ingestion", async () => {
-    jest.spyOn(ingestionClient, "send").mockReturnValue({
-      message: "success",
-      ingestion: {
-        id: 1,
-        documentId: 1,
-        userId: 1,
-        status: "success",
-        ingestedAt: "2021-09-01T00:00:00Z",
-      },
-    } as any);
+  describe('addIngestion', () => {
+    it('should send add.ingestion message with userId', async () => {
+      const dto: CreateIngestionDto = { documentId: 'doc123' };
+      const mockResponse = { ingestion: { id: 'ing123' } };
 
-    let result = null;
+      mockClsService.get.mockReturnValue('user123');
+      mockClientProxy.send.mockReturnValue(of(mockResponse));
 
-    await clsService.runWith({ authUser: { id: 1 } } as any, async () => {
-      result = await service.addIngestion({ documentId: 1 });
-    });
+      const result = await service.addIngestion(dto);
 
-    expect(ingestionClient.send).toHaveBeenCalledWith("add.ingestion", {
-      userId: 1,
-      documentId: 1,
-    });
-    expect(result).toMatchObject({
-      message: "success",
-      ingestion: {
-        id: 1,
-        documentId: 1,
-        userId: 1,
-        status: "success",
-        ingestedAt: "2021-09-01T00:00:00Z",
-      },
+      expect(mockClsService.get).toHaveBeenCalledWith('authUser.id');
+      expect(mockClientProxy.send).toHaveBeenCalledWith('add.ingestion', {
+        userId: 'user123',
+        documentId: 'doc123',
+        type: 'TYPE',
+      });
+      expect(result).toEqual(mockResponse);
     });
   });
 
-  it("should find ingestion by id", async () => {
-    jest.spyOn(ingestionClient, "send").mockReturnValue({
-      message: "success",
-      ingestion: {
-        id: 1,
-        documentId: 1,
-        userId: 1,
-        status: "success",
-        ingestedAt: "2021-09-01T00:00:00Z",
-      },
-    } as any);
+  describe('findIngestionById', () => {
+    it('should return ingestion details with document and user info', async () => {
+      const mockIngestionResponse = {
+        ingestion: {
+          id: 'ing123',
+          documentId: 'doc123',
+          userId: 'user123',
+          status: 'COMPLETED',
+        },
+      };
 
-    jest.spyOn(userRepo, "findOneByOrFail").mockResolvedValue(mockUserEntity);
-    jest.spyOn(documentRepo, "findOneByOrFail").mockResolvedValue({
-      id: 1,
-      originalName: "test",
-      mimeType: "application/pdf",
-      name: "test",
-      uploadedAt: new Date("2021-09-01T00:00:00Z"),
-    });
+      const mockUser = { id: 'user123', name: 'Test User', email: 'test@example.com' };
+      const mockDocument = { id: 'doc123', originalName: 'file.pdf' };
 
-    const result = await service.findIngestionById(1);
+      mockClientProxy.send.mockReturnValue(of(mockIngestionResponse));
+      mockUserRepo.findOneByOrFail.mockResolvedValue(mockUser);
+      mockDocumentRepo.findOneByOrFail.mockResolvedValue(mockDocument);
 
-    expect(ingestionClient.send).toHaveBeenCalledWith("get.ingestion", 1);
-    expect(userRepo.findOneByOrFail).toHaveBeenCalledWith({ id: 1 });
-    expect(documentRepo.findOneByOrFail).toHaveBeenCalledWith({ id: 1 });
-    expect(result).toMatchObject({
-      id: 1,
-      user: {
-        id: 0,
-        name: "firstName",
-        email: "email",
-      },
-      document: {
-        id: 1,
-        name: "test",
-      },
-      status: "success",
+      const result = await service.findIngestionById('ing123');
+
+      expect(mockClientProxy.send).toHaveBeenCalledWith('get.ingestion', 'ing123');
+      expect(result).toEqual({
+        id: 'ing123',
+        document: {
+          id: 'doc123',
+          name: 'file.pdf',
+        },
+        user: {
+          id: 'user123',
+          name: 'Test User',
+          email: 'test@example.com',
+        },
+        status: 'COMPLETED',
+      });
     });
   });
 });
