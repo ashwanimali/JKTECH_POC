@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClsModule } from 'nestjs-cls';
+import { LoggerService } from './common/utils/logger.service';
 import { DbModule } from './db/db.module';
 import { AuthModule } from './modules/v1/auth/auth.module';
 import { DocumentsModule } from './modules/v1/documents/documents.module';
@@ -30,6 +31,6 @@ import { SeederModule } from './seeder/seeder.module';
     IngestionModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [LoggerService],
 })
 export class AppModule {}

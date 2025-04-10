@@ -15,13 +15,6 @@ import { PermissionFactory } from 'src/factories/permission.factory';
 
 @Module({
     imports: [
-        // ClientsModule.register([
-        //     {
-        //         name: 'Injection_Service',
-        //         transport: Transport.TCP,
-        //         options: { host: '192.168.2.109', port: 4002 },
-        //     },
-        // ]),
         TypeOrmModule.forFeature([User, Permission, Document]),
         JwtModule.registerAsync({
             inject: [ConfigService],

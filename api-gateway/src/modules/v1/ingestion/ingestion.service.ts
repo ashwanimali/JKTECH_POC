@@ -25,9 +25,9 @@ export class IngestionService {
     return firstValueFrom(
       this.ingestionClient.send<
         IngestionResponse,
-        CreateIngestionDto & { userId: number }
+        CreateIngestionDto & { userId: string }
       >("add.ingestion", {
-        userId: this.clsService.get<number>("authUser.id"),
+        userId: this.clsService.get<string>("authUser.id"),
         ...createIngestionDto,
       }),
     );
