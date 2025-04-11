@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { PermissionGuard } from 'src/common/guards/permission.guard';
 
-@Controller('documents')
+@Controller({path : 'documents' , version:"1"})
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
 export class DocumentsController {

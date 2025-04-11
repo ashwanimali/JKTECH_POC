@@ -13,14 +13,14 @@ export class UserSeeder {
     if (!adminUser) {
       await this.userService.create({
         name: 'administrator',
-        password: 'adminpassword',
-        email: 'admin@gmail.com',
-        role: 'admin',
+        password: 'superadminpassword',
+        email: 'superadmin@gmail.com',
+        role: 'superadmin',
       });
 
-      console.log('✅ Admin user created successfully.');
+      console.log('Admin user created successfully.');
     } else {
-      console.log('ℹ️ Admin user already exists.');
+      console.log('Admin user already exists.');
     }
   }
 }

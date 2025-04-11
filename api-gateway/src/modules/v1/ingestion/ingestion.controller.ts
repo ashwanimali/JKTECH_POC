@@ -14,7 +14,7 @@ import { PermissionGuard } from "src/common/guards/permission.guard";
 import { CreateIngestionDto } from "./dto/create-ingestion.dto";
 import { IngestionService } from "./ingestion.service";
 
-@Controller("ingestion")
+@Controller({path : 'ingestion' , version:"1"})
 export class IngestionController {
   constructor(private readonly ingestionService: IngestionService) {}
 

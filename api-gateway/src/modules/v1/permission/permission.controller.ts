@@ -6,7 +6,7 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 
 
-@Controller('permissions')
+@Controller({path : 'permissions' , version:"1"})
 @UseGuards(AuthGuard)
 export class PermissionController {
     constructor(private readonly permissionService: PermissionService) { }
