@@ -74,3 +74,59 @@ In this i created factory pattern for database using typeorm.
 ## logger 
 
 In this i created logger service and have logs for request, response and errors.
+
+example logs 
+
+2025-04-13T10:57:56.512Z - [POST] /v1/auth/login | User: anonymous - 269ms
+  Request: {}
+  Response: {
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDA4YjZkZi0xMzAzLTQ2YzYtODgxYy1mZTAzY2QwMDRiNDkiLCJyb2xlIjoic3VwZXJhZG1pbiIsImlhdCI6MTc0NDU0MTg3NiwiZXhwIjoxNzQ0NTQ1NDc2fQ.RAat50ZTxF9fgGBTumYVPiOg97cofWirpc6nrexhNNg"
+}
+
+2025-04-13T10:58:22.411Z - [POST] /v1/users | User: anonymous
+  Request: {
+  "name": "John Doe",
+  "email": "john@example1.com",
+  "password": "securePass123",
+  "role": "editor"
+}
+
+2025-04-13T10:58:22.579Z - [POST] /v1/users | User: anonymous - 171ms
+  Request: {}
+  Response: {
+  "id": "5d07603a-ae41-4097-b27a-517474f4a19b",
+  "name": "John Doe",
+  "email": "john@example1.com",
+  "password": "$2b$10$VmNukOP0B8lmM.TPNerluu0hm.BXEnNLyvG/X0NC96yEMnE3PwULO",
+  "role": "editor",
+  "createdById": null
+}
+
+2025-04-13T11:06:48.476Z - [POST] /v1/users | User: anonymous
+  Request: {
+  "name": "John Doe",
+  "email": "john@example5.com",
+  "password": "securePass123",
+  "role": "editor"
+}
+  Response: {}
+2025-04-13T11:06:53.517Z - [POST] /v1/users | User: anonymous - 183ms
+  Request: {}
+  Response: {
+  "id": "edb2b336-8bd6-430f-bb95-2fd198dbe640",
+  "name": "John Doe",
+  "email": "john@example5.com",
+  "password": "$2b$10$GCzuodMt6jGpok39fyvQyOJrSc8NHZtA.iSjREkps6k31gVDcPqkO",
+  "role": "editor",
+  "createdById": "1008b6df-1303-46c6-881c-fe03cd004b49",
+  "updatedById": null
+}
+
+2025-04-13T11:08:40.802Z - [2025-04-13T11:08:40.801Z | POST] /v1/users | User: anonymous | Error: Invalid/Expired token | Status : 401
+  Request: {
+  "name": "John Doe",
+  "email": "john@example5.com",
+  "password": "securePass123",
+  "role": "editor"
+}
+  Response: {} 
