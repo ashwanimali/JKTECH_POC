@@ -61,13 +61,13 @@ export class DocumentsService {
         return document;
     }
 
-    async update(id: string, file: any, user: any) {
+    async update(id: string, file: any, req: any) {
         const previousDocument = await this.findOne(id);
         const documentToDelete = previousDocument.name;
         previousDocument.originalName = file.originalname;
         previousDocument.name = file.filename;
         previousDocument.mimeType = file.mimetype;
-        previousDocument.updatedBy = user
+        previousDocument.updatedBy = req.user
         try {
             await this.documentRepository.save(previousDocument);
             await rm(

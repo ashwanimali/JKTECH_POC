@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, UseGuards, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, UseGuards, Delete, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -29,9 +29,9 @@ export class UsersController {
         description: "Internal Server Error",
     })
     @Post()
-    async create(@Body() createUserDto: CreateUserDto) {
+    async create(@Body() createUserDto: CreateUserDto, @Req() req: any) {
         try {
-            return this.usersService.create(createUserDto);
+            return this.usersService.create(createUserDto, req);
         } catch (error) {
             throw error
         }
@@ -79,22 +79,16 @@ export class UsersController {
         description: "Internal Server Error",
     })
     @Patch(':id')
-    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.usersService.update(id, updateUserDto);
+    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: any) {
+        return this.usersService.update(id, updateUserDto, req);
     }
 
     @ApiBearerAuth()
     @ApiResponse({
         status: 201,
-        description: "User Deleted Successfully",
+        description: "User with ID 1234 successfully deleted",
         example: {
-            message: "User Deleted Successfully",
-            user: {
-                id: 1,
-                name: "name",
-                email: "email",
-                role: "role",
-            },
+            message: "User with ID 1234 successfully deleted",
         },
     })
     @ApiResponse({

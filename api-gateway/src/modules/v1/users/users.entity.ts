@@ -19,4 +19,7 @@ export class User {
 
     @Column({ nullable: true })
     createdById?: string;
+
+    @Column({ nullable: true })
+    updatedById?: string;
 }

@@ -13,7 +13,7 @@ export class UsersService {
         private readonly userRepository: Repository<User>,
     ) { }
 
-    async create(createUserDto: CreateUserDto) {
+    async create(createUserDto: CreateUserDto, req?: any) {
         try {
             // Check if password is provided
             if (!createUserDto?.password) {
@@ -34,7 +34,8 @@ export class UsersService {
                 throw new HttpException('User found with email, try with different email', 400);
             }
             const hashedPassword = await HashUtil.hashPassword(createUserDto.password);
-            const user = this.userRepository.create({ ...createUserDto, password: hashedPassword });
+            console.log("|req?.user", req?.user)
+            const user = this.userRepository.create({ ...createUserDto, password: hashedPassword, createdById: req?.user?.id ?? "" });
             return await this.userRepository.save(user);
 
         } catch (error) {
@@ -63,8 +64,8 @@ export class UsersService {
         return this.userRepository.findOne({ where: { id: userId } });
     }
 
-    async update(id: string, updateUserDto: UpdateUserDto) {
-        const user = await this.userRepository.preload({ id, ...updateUserDto });
+    async update(id: string, updateUserDto: UpdateUserDto, req: any) {
+        const user = await this.userRepository.preload({ id, ...updateUserDto, updatedById: req?.user?.id ?? "" });
         if (!user) {
             throw new NotFoundException(`User with ID ${id} not found`);
         }

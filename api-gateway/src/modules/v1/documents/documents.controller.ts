@@ -1,89 +1,85 @@
-import { Controller, Get, Post, Delete, Param, UseInterceptors, UploadedFile, UseGuards, Req, StreamableFile, Put } from '@nestjs/common';
+import {
+    Controller, Get, Post, Delete, Param, UseInterceptors, UploadedFile,
+    UseGuards, Req, StreamableFile, Put
+} from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { PermissionGuard } from 'src/common/guards/permission.guard';
 
-@Controller({path : 'documents' , version:"1"})
-@UseGuards(AuthGuard)
+@ApiTags('Documents')
 @ApiBearerAuth()
+@Controller({ path: 'documents', version: '1' })
+@UseGuards(AuthGuard)
 export class DocumentsController {
     constructor(private readonly documentsService: DocumentsService) { }
 
     @Post()
-    @ApiConsumes("multipart/form-data")
+    @ApiConsumes('multipart/form-data')
     @ApiBody({
-        description: "Upload A document",
+        description: 'Upload a document',
         schema: {
-            type: "object",
+            type: 'object',
             properties: {
-                files: {
-                    type: "file",
-                    format: "binary",
+                document: {
+                    type: 'string',
+                    format: 'binary',
                 },
             },
         },
     })
     @UseGuards(AuthGuard, PermissionGuard)
-    @UseInterceptors(FileInterceptor("document"))
-
+    @UseInterceptors(FileInterceptor('document'))
     async createDocument(@UploadedFile() file: any, @Req() req: any) {
         const newDocument = await this.documentsService.create(file, req);
-
         return {
-            message: "Document is created",
+            message: 'Document is created',
             document: {
                 id: newDocument.id,
             },
         };
     }
 
-    @Get(":id")
-    @ApiBearerAuth()
-    async getDocumentById(@Param("id") id: string) {
+    @Get(':id')
+    async getDocumentById(@Param('id') id: string) {
         const stream = await this.documentsService.getDocument(id);
-
         return new StreamableFile(stream);
     }
 
-    @Put(":id")
-    @ApiBearerAuth()
-    @ApiConsumes("multipart/form-data")
+    @Put(':id')
+    @ApiConsumes('multipart/form-data')
     @ApiBody({
-        description: "Upload a new document to update",
+        description: 'Upload a new document to update',
         schema: {
-            type: "object",
+            type: 'object',
             properties: {
-                files: {
-                    type: "file",
-                    format: "binary",
+                document: {
+                    type: 'string',
+                    format: 'binary',
                 },
             },
         },
     })
     @UseGuards(AuthGuard, PermissionGuard)
-    @UseInterceptors(FileInterceptor("document"))
+    @UseInterceptors(FileInterceptor('document'))
     async updateDocument(
-        @Param("id") id: string,
+        @Param('id') id: string,
         @UploadedFile() document: any,
-        @Req() req: any
+        @Req() req: any,
     ) {
-        await this.documentsService.update(id, document,req);
-
+        await this.documentsService.update(id, document, req);
         return {
-            message: "Document updated",
+            message: 'Document updated',
         };
     }
 
     @Get()
-    @ApiBearerAuth()
     @UseGuards(AuthGuard, PermissionGuard)
     async getAllDocument() {
-      return this.documentsService.findAll();
+        return this.documentsService.findAll();
     }
 
-    @ApiBearerAuth()
     @Delete(':id')
     async remove(@Param('id') id: string) {
         return this.documentsService.remove(id);

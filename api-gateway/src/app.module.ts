@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClsModule } from 'nestjs-cls';
+import { AllExceptionFilter } from './common/filters/execption-filter';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { LoggerService } from './common/utils/logger.service';
 import { DbModule } from './db/db.module';
 import { AuthModule } from './modules/v1/auth/auth.module';
@@ -31,6 +34,15 @@ import { SeederModule } from './seeder/seeder.module';
     IngestionModule,
   ],
   controllers: [],
-  providers: [LoggerService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    LoggerService],
 })
 export class AppModule {}
