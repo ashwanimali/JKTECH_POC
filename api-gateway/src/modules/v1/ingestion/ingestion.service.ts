@@ -33,11 +33,6 @@ export class IngestionService {
     );
   }
 
-  /**
-   * Get details of ingestion by id
-   * @param id ingestion id
-   * @returns the details of the ingestion
-   */
   async findIngestionById(id: string) {
     const response = await firstValueFrom(
       this.ingestionClient.send<IngestionResponse, string>("get.ingestion", id),

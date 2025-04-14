@@ -1,4 +1,3 @@
-// src/global/guards/permission.guard.ts
 import {
     CanActivate,
     ExecutionContext,

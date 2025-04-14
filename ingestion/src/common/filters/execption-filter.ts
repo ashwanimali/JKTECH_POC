@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { ExceptionFilter, HttpException, ArgumentsHost, Catch, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express'
 import { LoggerService } from '../utils/logger.service';
@@ -12,7 +11,6 @@ export class AllExceptionFilter implements ExceptionFilter {
         const request = ctx.getRequest<Request>();
         const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
 
-        // log data in any exception
         const method = request.method;
         const url = request.url;
         const user = request["user"] || {};

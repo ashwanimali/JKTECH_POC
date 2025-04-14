@@ -4,7 +4,6 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Document } from './entities/document.entity';
 import { ConfigService } from '@nestjs/config';
 import { NotFoundException } from '@nestjs/common';
-import { createReadStream } from 'fs';
 import { rm } from 'fs/promises';
 import * as path from 'path';
 import * as constantUtils from 'src/common/utils/constant';

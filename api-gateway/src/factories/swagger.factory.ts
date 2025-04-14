@@ -1,4 +1,3 @@
-// src/swagger/swagger.factory.ts
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AuthModule } from 'src/modules/v1/auth/auth.module';

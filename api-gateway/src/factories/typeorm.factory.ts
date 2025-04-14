@@ -14,7 +14,6 @@ export class TypeORMFactory implements TypeOrmOptionsFactory {
       username: this.configService.get<string>('DB_USERNAME', 'postgres'),
       password: this.configService.get<string>('DB_PASSWORD', '1234'),
       database: this.configService.get<string>('DB_NAME', 'backend_database_dev'),
-    //   autoLoadEntities: true,
       synchronize: this.configService.get<boolean>('DB_SYNC', true),
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     };

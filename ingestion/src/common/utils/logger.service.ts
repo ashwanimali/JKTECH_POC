@@ -12,8 +12,6 @@ export class LoggerService {
     constructor(private readonly configService: ConfigService) {
         const logPath = this.configService.get('LOG_DIRECTORY_PATH') || 'src/logs';
         const retention = this.configService.get('LOG_RETENTION_DAYS');
-
-        // This ensures the path is always from the project root, not dist folder
         this.logDirectory = path.resolve(process.cwd(), logPath);
         this.logRetentionDays = retention ? parseInt(retention) : 7;
 

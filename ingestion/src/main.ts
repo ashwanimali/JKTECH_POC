@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-// Load env based on NODE_ENV
 dotenv.config({ path: `config/${process.env.NODE_ENV}.env` });
 
 async function bootstrap() {

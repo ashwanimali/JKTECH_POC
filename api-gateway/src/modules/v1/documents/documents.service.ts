@@ -46,7 +46,6 @@ export class DocumentsService {
 
     async getDocument(id: string) {
         const document = await this.findOne(id);
-        // get read stream from the file system
         const readStream = createReadStream(
             join(this.configService.get("upload.path") as string, document.name),
         );

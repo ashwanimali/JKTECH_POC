@@ -1,4 +1,3 @@
-
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/users.entity';
 
@@ -20,7 +19,7 @@ export class Document {
     @JoinColumn({ name: 'createdBy' })
     createdBy: User;
 
-    @ManyToOne(() => User, { eager: true, nullable: true }) // 👈 allow null for new docs
+    @ManyToOne(() => User, { eager: true, nullable: true })
     @JoinColumn({ name: 'updatedBy' })
     updatedBy?: User;
 

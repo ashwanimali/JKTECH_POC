@@ -3,9 +3,7 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Post,
-  Req,
   UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags, ApiResponse, ApiOperation } from "@nestjs/swagger";

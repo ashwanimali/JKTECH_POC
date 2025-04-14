@@ -126,7 +126,7 @@ describe('UsersService', () => {
       mockRepo.preload.mockResolvedValue(updatedUser);
       mockRepo.save.mockResolvedValue(updatedUser);
 
-      const result = await service.update('1', dto);
+      const result = await service.update('1', dto, {});
       expect(repo.preload).toHaveBeenCalledWith({ id: '1', ...dto });
       expect(repo.save).toHaveBeenCalledWith(updatedUser);
       expect(result).toEqual(updatedUser);
@@ -134,7 +134,7 @@ describe('UsersService', () => {
 
     it('should throw NotFoundException if user not found', async () => {
       mockRepo.preload.mockResolvedValue(null);
-      await expect(service.update('1', {})).rejects.toThrow(NotFoundException);
+      await expect(service.update('1', {}, {})).rejects.toThrow(NotFoundException);
     });
   });
 

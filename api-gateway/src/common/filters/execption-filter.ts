@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { ExceptionFilter, HttpException, ArgumentsHost, Catch, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express'
 import { LoggerService } from '../utils/logger.service';

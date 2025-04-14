@@ -16,6 +16,39 @@ curl --location 'http://localhost:3000/v1/user/login' \
 }'
 ```
 
+## Modules
+
+1. Auth Module 
+
+In this module we have a login route and in this we have to send username and password.
+and then we will get access_token of JWT sign of userId and role.
+
+2. Permission Module
+
+In this module we have CRUD operations for Creating , Updating , Reading and Deleting permissions.
+in this we have user based permissions.
+"userId, role, method, url" we can create permission with this keys and 
+in PermissionFactory we have get permission data for the url , role and method
+- `gateway/src/factories/permission.factory.ts`
+
+and in PermissionGuard we get the userid and call factory method for checking the permission 
+- `gateway/src/common/guards/permission.guard.ts`
+
+3. Documents Module
+
+In this module we have CRUD operation for uploading file in Documents , Updating , Reading and Deleting documents.
+in this we have multer factory for uploading files
+- `gateway/src/factories/multer.factory.ts`
+
+4. User Module 
+In this module we have CRUD operation for Creating, Updating, Reading and Deleting the user data 
+and in this user we will save the user with role and also we have createdBy so we can have trace for creator and we have updatedBy.
+
+5. Ingestion Module
+In this module we have route for create and get the ingestion to the microservice and we can send data via 
+send method from instance of ClientProxy from @nestjs/microservices and in the other hand of microservice 
+we will catch this message via @MessagePattern so we can catch any event fired from api-gateway and get message pattern data.
+
 ## User Authentication 
 
 This application uses JWT-based authentication implementation with Passport.js, Have custom AuthGuard to protect all routes that require authenticated access.JWT token are issued on successfull login and are required in the Authorization header (Bearer token is required).
@@ -49,7 +82,7 @@ Type of user
 
 In the User, Document, permission and ingestion we also storing createdBy and updatedBy 
 
-## NOTE
+## Swagger Documentation 
 
 The swagger document can be accessible under `http://localhost:3000/docs`.
 
@@ -71,18 +104,17 @@ In this i created factory pattern for database using typeorm.
 
 - `gateway/src/seeder/typeorm.factory.ts`
 
+## Cron Service
+
+In this we have a cron service for making zip of 2 days old logs file 
+- `gateway/src/common/service/logCron.service.ts`
+- `ingestion/src/common/service/logCron.service.ts`
+
 ## logger 
 
 In this i created logger service and have logs for request, response and errors.
 
-example logs 
-
-2025-04-13T10:57:56.512Z - [POST] /v1/auth/login | User: anonymous - 269ms
-  Request: {}
-  Response: {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDA4YjZkZi0xMzAzLTQ2YzYtODgxYy1mZTAzY2QwMDRiNDkiLCJyb2xlIjoic3VwZXJhZG1pbiIsImlhdCI6MTc0NDU0MTg3NiwiZXhwIjoxNzQ0NTQ1NDc2fQ.RAat50ZTxF9fgGBTumYVPiOg97cofWirpc6nrexhNNg"
-}
-
+## Request Type Logs
 2025-04-13T10:58:22.411Z - [POST] /v1/users | User: anonymous
   Request: {
   "name": "John Doe",
@@ -91,6 +123,7 @@ example logs
   "role": "editor"
 }
 
+## Response Type Logs
 2025-04-13T10:58:22.579Z - [POST] /v1/users | User: anonymous - 171ms
   Request: {}
   Response: {
@@ -102,7 +135,8 @@ example logs
   "createdById": null
 }
 
-2025-04-13T11:06:48.476Z - [POST] /v1/users | User: anonymous
+## Error Type Logs
+2025-04-14T18:20:04.458Z - [2025-04-14T18:20:04.457Z | POST] /v1/users | User: anonymous | Error: Invalid/Expired token | Status : 401
   Request: {
   "name": "John Doe",
   "email": "john@example5.com",
@@ -110,23 +144,3 @@ example logs
   "role": "editor"
 }
   Response: {}
-2025-04-13T11:06:53.517Z - [POST] /v1/users | User: anonymous - 183ms
-  Request: {}
-  Response: {
-  "id": "edb2b336-8bd6-430f-bb95-2fd198dbe640",
-  "name": "John Doe",
-  "email": "john@example5.com",
-  "password": "$2b$10$GCzuodMt6jGpok39fyvQyOJrSc8NHZtA.iSjREkps6k31gVDcPqkO",
-  "role": "editor",
-  "createdById": "1008b6df-1303-46c6-881c-fe03cd004b49",
-  "updatedById": null
-}
-
-2025-04-13T11:08:40.802Z - [2025-04-13T11:08:40.801Z | POST] /v1/users | User: anonymous | Error: Invalid/Expired token | Status : 401
-  Request: {
-  "name": "John Doe",
-  "email": "john@example5.com",
-  "password": "securePass123",
-  "role": "editor"
-}
-  Response: {} 

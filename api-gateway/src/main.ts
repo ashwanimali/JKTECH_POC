@@ -7,7 +7,6 @@ import { SwaggerFactory } from './factories/swagger.factory';
 
 dotenv.config();
 
-// Load env based on NODE_ENV
 const envFile = `config/${process.env.NODE_ENV || 'dev'}.env`;
 
 dotenv.config({ path: envFile });

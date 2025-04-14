@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Document } from './entities/document.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { User } from '../users/users.entity';
 import { Permission } from '../permission/permission.entity';
 import { JwtStrategy } from '../auth/jwt.strategy';
